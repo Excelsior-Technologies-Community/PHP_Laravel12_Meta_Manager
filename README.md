@@ -1,66 +1,248 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PHP_LARAVEL12_META_MANAGER
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+```php
+Laravel 12 based Meta Manager project for managing SEO Meta Tags (Title, Description, Keywords) dynamically for different pages, built using a clean MVC + Service-ready architecture.
+```
+# Project Overview
+```php
+PHP_LARAVEL12_META_MANAGER allows developers to control SEO metadata from the database instead of hardcoding meta tags inside views.
+```
+# Key Features 
+```php
+- Page-wise dynamic SEO meta management
+- Database-driven meta tags
+- Blade-based rendering
+- API-ready structure
+- Scalable & production-ready Laravel 12 architecture
+```
 
-## About Laravel
+# Step 1: Install Fresh Laravel 12 Application
+Open Terminal / Command Prompt and run:
+```php
+composer create-project laravel/laravel:^12.0 PHP_LARAVEL12_META_MANAGER
+```
+Move into the project directory:
+```php
+cd PHP_LARAVEL12_META_MANAGER
+```
+Generate application key:
+```php
+php artisan key:generate
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Explanation
+```php
+- Installs a clean Laravel 12 application
+- Application key is required for encryption and security
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Step 2: Configure Environment & Database
+Open the .env file and update database configuration:
+```php
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=meta_manager
+DB_USERNAME=root
+DB_PASSWORD=
+```
+Save the file.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Run default migrations:
+```php
+php artisan migrate
+```
 
-## Learning Laravel
+# Explanation
+```php
+- .env manages environment-level configuration
+- Migrations create the required database tables
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+# Step 3: Meta Manager Core Architecture
+# Architecture Pattern
+- MVC + Service Ready Structure
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# Main Components
+```php
+- Meta Tag Module
+- Page-wise SEO Logic
+- Blade-based Rendering
+- API-ready structure
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Step 4: Create Meta Tags Database Structure
+Create migration:
+```php
+php artisan make:migration create_meta_tags_table
+```
+```php
+<?php
 
-## Laravel Sponsors
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+   public function up(): void
+{
+    Schema::create('meta_tags', function (Blueprint $table) {
+        $table->id();
+        $table->string('page_name');
+        $table->string('meta_title')->nullable();
+        $table->text('meta_description')->nullable();
+        $table->text('meta_keywords')->nullable();
+        $table->timestamps();
+    });
+}
 
-### Premium Partners
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('meta_tags');
+    }
+};
+```
+Run migration:
+```php
+php artisan migrate
+```
+# Explanation
+```php
+- Stores SEO meta data page-wise
+- Allows dynamic SEO updates without code changes
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+# Step 5: Create MetaTag Model
+Create model:
+```php
+<?php
 
-## Contributing
+namespace App\Models;
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+use Illuminate\Database\Eloquent\Model;
 
-## Code of Conduct
+class MetaTag extends Model
+{
+    protected $fillable = [
+    'page_name',
+    'meta_title',
+    'meta_description',
+    'meta_keywords'
+];
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+}
+```
+# Explanation
+```php
+- Model represents meta_tags table
+- $fillable enables mass assignment
+```
+# Step 6: Create MetaTag Controller
+Create controller:
+```php
+php artisan make:controller MetaTagController
+```
+```php
+<?php
 
-## Security Vulnerabilities
+namespace App\Http\Controllers;
+ use App\Models\MetaTag;
+use Illuminate\Http\Request;
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+class MetaTagController extends Controller
+{
+   
 
-## License
+public function index()
+{
+    return MetaTag::all();
+}
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+public function store(Request $request)
+{
+    return MetaTag::create($request->all());
+}
+
+}
+```
+# Explanation
+```php
+- Controller handles meta tag logic
+- Returns all meta records
+```
+
+# Step 7: Define Routes
+Open routes/web.php:
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MetaTagController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
+
+Route::get('/meta-tags', [MetaTagController::class, 'index']);
+Route::post('/meta-tags', [MetaTagController::class, 'store']);
+
+```
+# Explanation
+```php
+/ loads the home page
+/meta-tags returns meta records in JSON format
+```
+# Step 8: Verify Meta Loading
+Start Laravel development server:
+```php
+php artisan serve
+```
+Open browser:
+```php
+http://127.0.0.1:8000
+```
+<img width="1294" height="606" alt="image" src="https://github.com/user-attachments/assets/6dd10449-dd73-4c26-aeac-c4fb993c16ca" />
+
+```php
+http://127.0.0.1:8000/meta-tags
+```
+<img width="897" height="424" alt="image" src="https://github.com/user-attachments/assets/6c479dea-310d-42d6-af02-d58c7db210e1" />
+
+# Explanation
+```php
+- Home page loads SEO meta dynamically
+- /meta-tags endpoint confirms database connectivity
+```
+# Project Folder Structure
+```php
+PHP_LARAVEL12_META_MANAGER
+├── app/
+│   ├── Models/
+│   │   └── MetaTag.php
+│   ├── Http/
+│   │   └── Controllers/
+│   │       └── MetaTagController.php
+│
+├── resources/
+│   └── views/
+│       └── home.blade.php
+│
+├── routes/
+│   └── web.php
+│
+├── database/
+│   └── migrations/
+│
+├── .env
+├── artisan
+└── composer.json
+```
