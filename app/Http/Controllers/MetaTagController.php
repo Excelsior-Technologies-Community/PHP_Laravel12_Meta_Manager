@@ -8,9 +8,33 @@ use Illuminate\Support\Str;
 
 class MetaTagController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $metaTags = MetaTag::latest()->get();
+        $query = MetaTag::query();
+
+        if ($request->search) {
+
+            $query->where(function ($q) use ($request) {
+
+                $q->where('page_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('slug', 'like', '%' . $request->search . '%')
+                    ->orWhere('meta_title', 'like', '%' . $request->search . '%')
+                    ->orWhere('meta_description', 'like', '%' . $request->search . '%')
+                    ->orWhere('meta_keywords', 'like', '%' . $request->search . '%');
+
+                if (strtolower($request->search) == 'active') {
+                    $q->orWhere('status', 1);
+                }
+
+                if (strtolower($request->search) == 'inactive') {
+                    $q->orWhere('status', 0);
+                }
+
+            });
+
+        }
+
+        $metaTags = $query->oldest()->paginate(4);
 
         return view('meta.index', compact('metaTags'));
     }
@@ -47,6 +71,14 @@ class MetaTagController extends Controller
 
         return redirect('/meta-tags')
             ->with('success', 'Meta Tag Created Successfully');
+    }
+
+    public function destroy($id)
+    {
+        MetaTag::findOrFail($id)->delete();
+
+        return redirect('/meta-tags')
+            ->with('success', 'Meta Tag Deleted Successfully');
     }
 
     public function dashboard()
